@@ -116,7 +116,7 @@ class Board:
                         if list(self.board[c][b1])[0] == "W" or list(self.board[c][b1])[0] == "B":
                             print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
                             self.test()
-                    while a>c:
+                    while c>a1:
                         c = c-1
                         if list(self.board[c][b1])[0] == "W" or list(self.board[c][b1])[0] == "B":
                             print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
@@ -130,8 +130,8 @@ class Board:
                 self.test()                                                                                             #/wieza
  
         if self.board[a][b] == self.bknight or self.board[a][b] == self.wknight:                                                                            #skoczek
-            if (a1 == a + 2 and b1 == b +1 or b1 == b-1) or (a1 == a - 2 and b1 == b +1 or b1 == b-1)\
-            or (b1 == b + 2 and a1 == a +1 or a1 == a-1) or (b1 == b - 2 and a1 == a +1 or a1 == a-1):
+            if (a1 == a + 2 and (b1 == b +1 or b1 == b-1)) or (a1 == a - 2 and (b1 == b +1 or b1 == b-1))\
+            or (b1 == b + 2 and (a1 == a +1 or a1 == a-1)) or (b1 == b - 2 and (a1 == a +1 or a1 == a-1)):
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
@@ -143,6 +143,43 @@ class Board:
         if self.board[a][b] == self.bbishop or self.board[a][b] == self.wbishop:                                                                             #goniec
             if a1 - a == b1 - a or a - a1 == b - b1 or int(math.fabs(a1 - a)) == int(math.fabs(b1 - a))\
             or int(math.fabs(a - a1)) == int(math.fabs(b - b1)):
+                c = b
+                e = a
+                d = b1
+                f = a1
+                for x in range (int(math.fabs(b1-b))):
+                    while b1>c and e>a1:
+                        c= c+1
+                        e =e-1
+                        if e == a1 and  c == b1:
+                            break
+                        if list(self.board[e][c])[0] == "W" or list(self.board[e][c])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
+                    while b1>c and a1>e:
+                        c = c+1
+                        e = e+1
+                        if e == a1 and  c == b1:
+                            break
+                        if list(self.board[e][c])[0] == "W" or list(self.board[e][c])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
+                    while c>b1 and e>a1:
+                        c = c-1
+                        e = e-1
+                        if e == a1 and  c == b1:
+                            break
+                        if list(self.board[e][c])[0] == "W" or list(self.board[e][c])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
+                    while c>b1 and a1>e:
+                        c = c-1
+                        e = e+1
+                        if e == a1 and  c == b1:
+                            break
+                        if list(self.board[e][c])[0] == "W" or list(self.board[e][c])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
@@ -152,15 +189,89 @@ class Board:
                 self.test()                                                                                             #/goniec
  
         if self.board[a][b] == self.bqueen or self.board[a][b] == self.wqueen:                                                                               #dama
-            if (a1 - a == b1 - a or a - a1 == b - b1 or int(math.fabs(a1 - a)) == int(math.fabs(b1 - a))\
-            or int(math.fabs(a - a1)) == int(math.fabs(b - b1))) or (a == a1 or b == b1):
+            if a == a1:
+                c = b
+                d = b1
+                for x in range (int(math.fabs(b1-b))):
+                    while b1>c:
+                        c= c+1
+                        if list(self.board[a1][c])[0] == "W" or list(self.board[a1][c])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
+                    while c>b1:
+                        c = c-1
+                        if list(self.board[a1][c])[0] == "W" or list(self.board[a1][c])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
+                self.attack()
+                self.board[a1][b1] = w
+                self.board[a][b] = " 0 "
+                self.test()
+            elif b == b1:
+                c = a
+                d = a1
+                for x in range (int(math.fabs(a1-a))):
+                    while a1>c:
+                        c= c+1
+                        if list(self.board[c][b1])[0] == "W" or list(self.board[c][b1])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
+                    while c>a1:
+                        c = c-1
+                        if list(self.board[c][b1])[0] == "W" or list(self.board[c][b1])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
+                self.attack()
+                self.board[a1][b1] = w
+                self.board[a][b] = " 0 "
+                self.test()
+            elif a1 - a == b1 - a or a - a1 == b - b1 or int(math.fabs(a1 - a)) == int(math.fabs(b1 - a))\
+            or int(math.fabs(a - a1)) == int(math.fabs(b - b1)):
+                c = b
+                e = a
+                d = b1
+                f = a1
+                for x in range (int(math.fabs(b1-b))):
+                    while b1>c and e>a1:
+                        c= c+1
+                        e =e-1
+                        if e == a1 and  c == b1:
+                            break
+                        if list(self.board[e][c])[0] == "W" or list(self.board[e][c])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
+                    while b1>c and a1>e:
+                        c = c+1
+                        e = e+1
+                        if e == a1 and  c == b1:
+                            break
+                        if list(self.board[e][c])[0] == "W" or list(self.board[e][c])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
+                    while c>b1 and e>a1:
+                        c = c-1
+                        e = e-1
+                        if e == a1 and  c == b1:
+                            break
+                        if list(self.board[e][c])[0] == "W" or list(self.board[e][c])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
+                    while c>b1 and a1>e:
+                        c = c-1
+                        e = e+1
+                        if e == a1 and  c == b1:
+                            break
+                        if list(self.board[e][c])[0] == "W" or list(self.board[e][c])[0] == "B":
+                            print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
+                            self.test()
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
                 self.test()
             else:
                 print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
-                self.test()                                                                                             #/dama
+                self.test()
+                    
  
         if self.board[a][b] == self.bking or self.board[a][b] == self.wking:
             if (a1 == a and b1 == b +1) or (a1 == a and b1 == b -1) or (b1 == b and a1 == a -1)\
