@@ -3,6 +3,7 @@ import math
 class Board:
  
     def __init__(self, board):
+        self.counter = 1
         square = " 0 "
         self.board = board
         self.board = [[square for j in range(8)] for i in range(8)]
@@ -283,6 +284,35 @@ class Board:
             else:
                 print("Niepoprawne dane, wprowadz wspolrzedne jeszcze raz:" + "\n")
                 self.test()
+
+    def turns(self):  
+        self.attacking = list(self.board[self.a][self.b])
+        if self.counter%2 == 0:
+            tura = "czarne"
+        if self.counter%2 == 1:
+            tura = "biale"
+        
+        if self.win == 0:
+            print ("Ruszają się: " + tura)
+            if tura == "biale":
+                if self.attacking[0] == "W":
+                    self.counter +=1
+                    print (self.counter, tura)
+                else:
+                    print ("Powinny sie ruszac biale!!")
+                    self.test()
+                    
+            elif tura == "czarne":
+                if self.attacking[0] == "B":
+                    self.counter +=1
+                    print (self.counter, tura)
+                else:
+                    print ("Powinny sie ruszac czarne!!")
+                    self.test()
+            else:
+                print ("Zle dane")
+                self.test()
+                
                 
     def attack(self):
         a = self.a
@@ -301,6 +331,7 @@ class Board:
 
                 
     def test(self):
+        self.win = 0
         for i in self.board:
             print(''.join(i))
         x = input("Podaj wspolrzedne:")
@@ -316,6 +347,7 @@ class Board:
         x1 = list(x1)
         self.a1 = int(x1[0])
         self.b1 = int(x1[1])
+        self.turns()
         self.rules()
         test()
  
