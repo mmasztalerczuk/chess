@@ -102,6 +102,7 @@ class Board:
                     print("Szach")
 
                 # if all rules are completed - move to destined location
+                self.turns()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
                 self.test()
@@ -129,6 +130,7 @@ class Board:
                     print("Szach czarny pionek na bialego krola!")
 
                 # if all rules are completed - move to destined location
+                self.turns()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
                 self.test()
@@ -157,7 +159,7 @@ class Board:
                         if list(self.board[a1][tmp_b])[0] == ("W" or "B"):
                             self.error()
 
-                # checking black king
+                # checking king
                 for l in range(8):
                     if self.board[tmp1_a][b1] == (self.bking or self.wking):
                         while tmp1_a - 1> a1:
@@ -171,7 +173,6 @@ class Board:
                                 self.check = 0
                     tmp1_a += 1
 
-
                     if self.board[a1][tmp1_b] == self.bking:
                         while tmp1_b - 1 > b1:
                             tmp1_b -= 1
@@ -184,12 +185,13 @@ class Board:
                     tmp1_b += 1
 
                 # if all rules are completed - move to destined location
-                if self.tura == "biale":
-                    if (list(self.wking)[0] == list(self.board[a][b])[0]):
-                        self.check = 0
                 if self.tura == "czarne":
-                    if (list(self.bking)[0] == list(self.board[a][b])[0]):
+                    if list(self.wking)[0] == list(self.board[a][b])[0]:
                         self.check = 0
+                if self.tura == "biale":
+                    if list(self.bking)[0] == list(self.board[a][b])[0]:
+                        self.check = 0
+                self.turns()
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
@@ -214,20 +216,43 @@ class Board:
                         if list(self.board[tmp_a][b1])[0] == ("W" or "B"):
                             self.error()
 
-                # checking black king
-                for p in range(8):
-                    if self.board[tmp1_a][b1] == self.bking:
-                        print("szach pion - ruch pionowy")
+                # checking kings
+                for l in range(8):
+                    if self.board[tmp1_a][b1] == (self.bking or self.wking):
+                        while tmp1_a - 1 > a1:
+                            tmp1_a -= 1
+                            if list(self.board[tmp1_a][b1])[0] == ("W" or "B"):
+                                self.check = 0
+
+                        while a1 > tmp1_a + 1:
+                            tmp1_a += 1
+                            if list(self.board[tmp1_a][b1])[0] == ("W" or "B"):
+                                self.check = 0
                     tmp1_a += 1
+
                     if self.board[a1][tmp1_b] == self.bking:
-                        print("szach poziom - ruch poziomy")
+                        while tmp1_b - 1 > b1:
+                            tmp1_b -= 1
+                            if list(self.board[a1][tmp1_b])[0] == ("W" or "B"):
+                                self.check = 0
+                        while b1 > tmp1_b + 1:
+                            tmp1_a += 1
+                            if list(self.board[a1][tmp1_b])[0] == ("W" or "B"):
+                                self.check = 0
                     tmp1_b += 1
 
                 # if all rules are completed - move to destined location
+                if self.tura == "czarne":
+                    if list(self.wking)[0] == list(self.board[a][b])[0]:
+                        self.check = 0
+                if self.tura == "biale":
+                    if list(self.bking)[0] == list(self.board[a][b])[0]:
+                        self.check = 0
+                self.turns()
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
-                if self.check == 0:
+                if self.check == 1:
                     print("SZACH!")
                 self.test()
 
@@ -264,6 +289,7 @@ class Board:
                         print("szach czarny kon krawedz")
 
                 # if all rules are completed - move to destined location
+                self.turns()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
                 self.test()
@@ -297,6 +323,7 @@ class Board:
                         print("goniec bialy")
 
                 # if all rules are completed - move to destined location
+                self.turns()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
                 self.test()
@@ -336,6 +363,7 @@ class Board:
                     tmp1_b += 1
 
                 # if all rules are completed - move to destined location
+                self.turns()
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
@@ -368,6 +396,7 @@ class Board:
                         tmp1_b += 1
 
                 # if all rules are completed move to destined location
+                self.turns()
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
@@ -397,6 +426,7 @@ class Board:
                         print("dama biala")
 
                 # if all rules are completed - move to destined location
+                self.turns()
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
@@ -409,6 +439,7 @@ class Board:
         if self.board[a][b] == self.bking or self.board[a][b] == self.wking:
             if (a1 == a and b1 == b + 1) or (a1 == a and b1 == b - 1) or (b1 == b and a1 == a - 1) \
                     or (b1 == b and a1 == a + 1) or int(math.fabs(a1 == b1)) == 1:
+                self.turns()
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
@@ -499,7 +530,6 @@ class Board:
         cords_end = list(cords_end)
         self.pos_end_a = int(cords_end[0])
         self.pos_end_b = int(cords_end[1])
-        self.turns()
         self.rules()
 
         # repeat
