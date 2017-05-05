@@ -55,6 +55,7 @@ class Board:
         self.pos_end_b = None
         self.check = None
         self.counter = 1
+        self.win = 0
 
     def find(self):
         # finding position of black king
@@ -68,6 +69,16 @@ class Board:
             for self.wking_b, lst2 in enumerate(lst):
                 if lst2 == self.wking:
                     return self.wking_a, self.wking_b
+
+        for self.wpawn_a, lst in enumerate(self.board):
+            for self.wpawn_b, lst2 in enumerate(lst):
+                if lst2 == self.wpawn:
+                    return self.wpawn_a, self.wpawn_b
+
+        for self.bpawn_a, lst in enumerate(self.board):
+            for self.bpawn_b, lst2 in enumerate(lst):
+                if lst2 == self.wpawn:
+                    return self.bpawn_a, self.bpawn_b
 
     def rules(self):
         # function with rules for every figure
@@ -105,6 +116,7 @@ class Board:
                 self.turns()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
+                self.checks()
                 self.test()
 
             # exception handling for other combinations
@@ -112,6 +124,8 @@ class Board:
                 self.error()
 
                 # BLACK PAWN
+
+        # BLACK PAWN
         if self.board[a][b] == self.bpawn:
             if (a1 == a - 1 or a1 == 4 and a == 6) and math.fabs(b1 - b) < 2:
                 self.attack()
@@ -133,6 +147,7 @@ class Board:
                 self.turns()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
+                checks(self)
                 self.test()
 
             # exception handling for other combinations
@@ -165,7 +180,7 @@ class Board:
                         while tmp1_a - 1> a1:
                             tmp1_a -= 1
                             if list(self.board[tmp1_a][b1])[0] == ("W" or "B"):
-                                 self.check = 0
+                                self.check = 0
 
                         while a1 > tmp1_a + 1:
                             tmp1_a += 1
@@ -303,6 +318,34 @@ class Board:
             if a1 - a == b1 - b or a - a1 == b - b1 or int(math.fabs(a1 - a)) == int(math.fabs(b1 - b)) \
                     or (int(math.fabs(a - a1)) == int(math.fabs(b - b1))):
                 self.attack()
+                self.check = 0
+
+                # preventing from jumping over other figures
+                tmp_a = a
+                tmp_b = b
+                for v in range(int(math.fabs(a1 - a))):
+                    while a1 > tmp_a and b1 > tmp_b:
+                        tmp_a += 1
+                        tmp_b += 1
+                        if list(self.board[tmp_a][tmp_b])[0] == ("W" or "B"):
+                            self.error()
+
+                    while a1 > tmp_a and b1 < tmp_b:
+                        tmp_a += 1
+                        tmp_b -= 1
+                        if list(self.board[tmp_a][tmp_b])[0] == ("W" or "B"):
+                            self.error()
+
+                    while a1 < tmp_a and b1 > tmp_b:
+                        tmp_a -= 1
+                        tmp_b += 1
+                        if list(self.board[tmp_a][tmp_b])[0] == ("W" or "B"):
+                            self.error()
+                    while a1 < tmp_a and b1 < tmp_b:
+                        tmp_a -= 1
+                        tmp_b -= 1
+                        if list(self.board[tmp_a][tmp_b])[0] == ("W" or "B"):
+                            self.error()
 
                 # checking white king
                 if self.board[a][b] == self.bbishop:
@@ -311,7 +354,39 @@ class Board:
                     if (tmp_b - b1 == tmp_a - a1 or b1 - tmp_b == a1 - tmp_a) \
                             or (int(math.fabs(tmp_b - b1)) == int(math.fabs(tmp_a - a1))) \
                             or (int(math.fabs(b1 - tmp_b)) == int(math.fabs(a1 - tmp_a))) == self.wking:
-                        print("goniec czarny")
+
+                        for v in range(int(math.fabs(tmp_a - a1))):
+                            while a1 > tmp_a and b1 > tmp_b:
+                                tmp_a += 1
+                                tmp_b += 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 > tmp_a and b1 < tmp_b:
+                                tmp_a += 1
+                                tmp_b -= 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 < tmp_a and b1 > tmp_b:
+                                tmp_a -= 1
+                                tmp_b += 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 < tmp_a and b1 < tmp_b:
+                                tmp_a -= 1
+                                tmp_b -= 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
 
                 # checking black king
                 if self.board[a][b] == self.wbishop:
@@ -320,12 +395,46 @@ class Board:
                     if (tmp_b - b1 == tmp_a - a1) or (b1 - tmp_b == a1 - tmp_a) \
                             or (int(math.fabs(tmp_b - b1)) == int(math.fabs(tmp_a - a1))) \
                             or (int(math.fabs(b1 - tmp_b)) == int(math.fabs(a1 - tmp_a))) == self.bking:
-                        print("goniec bialy")
+
+                        for v in range(int(math.fabs(tmp_a - a1))):
+                            while a1 > tmp_a and b1 > tmp_b:
+                                tmp_a += 1
+                                tmp_b += 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 > tmp_a and b1 < tmp_b:
+                                tmp_a += 1
+                                tmp_b -= 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 < tmp_a and b1 > tmp_b:
+                                tmp_a -= 1
+                                tmp_b += 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 < tmp_a and b1 < tmp_b:
+                                tmp_a -= 1
+                                tmp_b -= 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
 
                 # if all rules are completed - move to destined location
                 self.turns()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
+                if self.check == 1:
+                    print("SZACH!")
                 self.test()
 
             # exception handling for other combinations
@@ -334,7 +443,6 @@ class Board:
 
         # BLACK AND WHITE QUEEN
         if self.board[a][b] == self.bqueen or self.board[a][b] == self.wqueen:
-            self.find()
 
             # moving horizontal
             if a == a1:
@@ -346,29 +454,54 @@ class Board:
                 for q in range(int(math.fabs(b1 - b))):
                     while b1 > tmp_b:
                         tmp_b += 1
-                        if list(self.board[a1][tmp_b])[0] == "W" or list(self.board[a1][tmp_b])[0] == "B":
+                        if list(self.board[a1][tmp_b])[0] == ("W" or "B"):
                             self.error()
                     while tmp_b > b1:
                         tmp_b -= 1
-                        if list(self.board[a1][tmp_b])[0] == "W" or list(self.board[a1][tmp_b])[0] == "B":
+                        if list(self.board[a1][tmp_b])[0] == ("W" or "B"):
                             self.error()
 
-                # checking black king
+                # checking king
                 for l in range(8):
-                    if self.board[tmp1_a][b1] == self.bking:
-                        print("szach pion - ruch poziomy")
+                    if self.board[tmp1_a][b1] == (self.bking or self.wking):
+                        while tmp1_a - 1 > a1:
+                            tmp1_a -= 1
+                            if list(self.board[tmp1_a][b1])[0] == ("W" or "B"):
+                                self.check = 0
+
+                        while a1 > tmp1_a + 1:
+                            tmp1_a += 1
+                            if list(self.board[tmp1_a][b1])[0] == ("W" or "B"):
+                                self.check = 0
                     tmp1_a += 1
+
                     if self.board[a1][tmp1_b] == self.bking:
-                        print("szach poziom - ruch poziomy")
+                        while tmp1_b - 1 > b1:
+                            tmp1_b -= 1
+                            if list(self.board[a1][tmp1_b])[0] == ("W" or "B"):
+                                self.check = 0
+                        while b1 > tmp1_b + 1:
+                            tmp1_a += 1
+                            if list(self.board[a1][tmp1_b])[0] == ("W" or "B"):
+                                self.check = 0
                     tmp1_b += 1
 
                 # if all rules are completed - move to destined location
+                if self.tura == "czarne":
+                    if list(self.wking)[0] == list(self.board[a][b])[0]:
+                        self.check = 0
+                if self.tura == "biale":
+                    if list(self.bking)[0] == list(self.board[a][b])[0]:
+                        self.check = 0
                 self.turns()
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
+                if self.check == 1:
+                    print("SZACH!")
                 self.test()
 
+            # moving vertical
             if b == b1:
                 tmp_a = a
                 tmp1_a = 0
@@ -378,34 +511,85 @@ class Board:
                 for v in range(int(math.fabs(a1 - a))):
                     while a1 > tmp_a:
                         tmp_a += 1
-                        if list(self.board[tmp_a][b1])[0] == "W" or list(self.board[tmp_a][b1])[0] == "B":
+                        if list(self.board[tmp_a][b1])[0] == ("W" or "B"):
                             self.error()
                     while tmp_a > a1:
                         tmp_a -= 1
-                        if list(self.board[tmp_a][b1])[0] == "W" or list(self.board[tmp_a][b1])[0] == "B":
+                        if list(self.board[tmp_a][b1])[0] == ("W" or "B"):
                             self.error()
 
-                # checking black king
-                for p in range(8):
+                # checking kings
+                for l in range(8):
+                    if self.board[tmp1_a][b1] == (self.bking or self.wking):
+                        while tmp1_a - 1 > a1:
+                            tmp1_a -= 1
+                            if list(self.board[tmp1_a][b1])[0] == ("W" or "B"):
+                                self.check = 0
 
-                    if self.board[tmp1_a][b1] == self.bking:
-                        print("szach pion - ruch pionowy")
-                        tmp1_a += 1
+                        while a1 > tmp1_a + 1:
+                            tmp1_a += 1
+                            if list(self.board[tmp1_a][b1])[0] == ("W" or "B"):
+                                self.check = 0
+                    tmp1_a += 1
+
                     if self.board[a1][tmp1_b] == self.bking:
-                        print("szach poziom - ruch poziomy")
-                        tmp1_b += 1
+                        while tmp1_b - 1 > b1:
+                            tmp1_b -= 1
+                            if list(self.board[a1][tmp1_b])[0] == ("W" or "B"):
+                                self.check = 0
+                        while b1 > tmp1_b + 1:
+                            tmp1_a += 1
+                            if list(self.board[a1][tmp1_b])[0] == ("W" or "B"):
+                                self.check = 0
+                    tmp1_b += 1
 
-                # if all rules are completed move to destined location
+                # if all rules are completed - move to destined location
+                if self.tura == "czarne":
+                    if list(self.wking)[0] == list(self.board[a][b])[0]:
+                        self.check = 0
+                if self.tura == "biale":
+                    if list(self.bking)[0] == list(self.board[a][b])[0]:
+                        self.check = 0
                 self.turns()
                 self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
+                if self.check == 1:
+                    print("SZACH!")
                 self.test()
 
             # moving diagonal
             if a1 - a == b1 - b or a - a1 == b - b1 or int(math.fabs(a1 - a)) == int(math.fabs(b1 - b)) \
                     or (int(math.fabs(a - a1)) == int(math.fabs(b - b1))):
                 self.attack()
+                self.check = 0
+
+                # preventing from jumping over other figures
+                tmp_a = a
+                tmp_b = b
+                for v in range(int(math.fabs(a1 - a))):
+                    while a1 > tmp_a and b1 > tmp_b:
+                        tmp_a += 1
+                        tmp_b += 1
+                        if list(self.board[tmp_a][tmp_b])[0] == ("W" or "B"):
+                            self.error()
+
+                    while a1 > tmp_a and b1 < tmp_b:
+                        tmp_a += 1
+                        tmp_b -= 1
+                        if list(self.board[tmp_a][tmp_b])[0] == ("W" or "B"):
+                            self.error()
+
+                    while a1 < tmp_a and b1 > tmp_b:
+                        tmp_a -= 1
+                        tmp_b += 1
+                        if list(self.board[tmp_a][tmp_b])[0] == ("W" or "B"):
+                            self.error()
+                    while a1 < tmp_a and b1 < tmp_b:
+                        tmp_a -= 1
+                        tmp_b -= 1
+                        if list(self.board[tmp_a][tmp_b])[0] == ("W" or "B"):
+                            self.error()
 
                 # checking white king
                 if self.board[a][b] == self.bqueen:
@@ -414,7 +598,39 @@ class Board:
                     if (tmp_b - b1 == tmp_a - a1 or b1 - tmp_b == a1 - tmp_a) \
                             or (int(math.fabs(tmp_b - b1)) == int(math.fabs(tmp_a - a1))) \
                             or (int(math.fabs(b1 - tmp_b)) == int(math.fabs(a1 - tmp_a))) == self.wking:
-                        print("dama czarna")
+
+                        for v in range(int(math.fabs(tmp_a - a1))):
+                            while a1 > tmp_a and b1 > tmp_b:
+                                tmp_a += 1
+                                tmp_b += 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 > tmp_a and b1 < tmp_b:
+                                tmp_a += 1
+                                tmp_b -= 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 < tmp_a and b1 > tmp_b:
+                                tmp_a -= 1
+                                tmp_b += 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 < tmp_a and b1 < tmp_b:
+                                tmp_a -= 1
+                                tmp_b -= 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
 
                 # checking black king
                 if self.board[a][b] == self.wqueen:
@@ -423,17 +639,51 @@ class Board:
                     if (tmp_b - b1 == tmp_a - a1) or (b1 - tmp_b == a1 - tmp_a) \
                             or (int(math.fabs(tmp_b - b1)) == int(math.fabs(tmp_a - a1))) \
                             or (int(math.fabs(b1 - tmp_b)) == int(math.fabs(a1 - tmp_a))) == self.bking:
-                        print("dama biala")
+
+                        for v in range(int(math.fabs(tmp_a - a1))):
+                            while a1 > tmp_a and b1 > tmp_b:
+                                tmp_a += 1
+                                tmp_b += 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 > tmp_a and b1 < tmp_b:
+                                tmp_a += 1
+                                tmp_b -= 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 < tmp_a and b1 > tmp_b:
+                                tmp_a -= 1
+                                tmp_b += 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
+
+                            while a1 < tmp_a and b1 < tmp_b:
+                                tmp_a -= 1
+                                tmp_b -= 1
+                                if list(self.board[tmp_a][tmp_b])[0] == 'W' or 'B':
+                                    self.check = 0
+                                else:
+                                    self.check = 1
 
                 # if all rules are completed - move to destined location
                 self.turns()
-                self.attack()
                 self.board[a1][b1] = w
                 self.board[a][b] = " 0 "
+                if self.check == 1:
+                    print("SZACH!")
                 self.test()
 
             # exception handling for other combinations
-            self.error()
+            else:
+                self.error()
 
         # BLACK AND WHITE KING
         if self.board[a][b] == self.bking or self.board[a][b] == self.wking:
@@ -517,7 +767,6 @@ class Board:
             print("wybierz pole z figurą!")
             self.test()
         print(self.figure)
-
         # second input
         cords_end = input("Podaj wspolrzedne docelowe:")
 
